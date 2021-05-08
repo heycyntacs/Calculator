@@ -4,77 +4,75 @@ const screen = document.querySelector('.screen');
 const clear = document.querySelector('.clear');
 const del = document.querySelector('.delete');
 const operators = document.querySelectorAll('.operator');
-const plus = document.querySelector('#add');
-const minus = document.querySelector('#subtract');
-const times = document.querySelector('#multiply');
-const divide = document.querySelector('#divide');
-let screenNumber;
-let storage = 0;
+let operandA, operandB;
+let operatorValue = '';
+let inputReset = false;
 
-inputButtons.forEach(button => button.addEventListener('click', e => {
-    screen.textContent += (button.value);
-    screenNumber = parseFloat(screen.textContent);
-}));
+//FOR INPUTTING NUMBERS
+//Buttons
+inputButtons.forEach(button => button.addEventListener('click', () => input(button.value)));
+inputDecimal.addEventListener('click', decimal);
+clear.addEventListener('click', reset);
+del.addEventListener('click', backSpace);
 
-inputDecimal.addEventListener('click', () => {
+function input(button) {
+    if (inputReset === true) screen.textContent = '';
+    screen.textContent += (button);
+}
+
+function decimal () {
     if (screen.textContent.includes('.')) return;
     if (screen.textContent === '') screen.textContent = '0.';
     else screen.textContent += '.';
-    screenNumber = parseFloat(screen.textContent);
-    console.log(screenNumber);
-});
+}
 
-clear.addEventListener('click', () => {
+function reset () {
     screen.textContent = '';
-});
+}
 
-const backSpace = del.addEventListener('click', () => {
-    let string = screen.textContent;
-    screen.textContent = string.slice(0, string.length - 1);
-    screenNumber = parseFloat(screen.textContent);
+function backSpace () {
+    screen.textContent = screen.textContent.slice(0, - 1);
+}
+
+//Keyboard-support
+window.addEventListener('keydown', e => {
+    if (e.key >= '0' && e.key <= '9') input(e.key);
+    else if (e.key === '.') decimal();
+    else if (e.key === 'Backspace') backSpace();
+    else if (e.key === 'Escape') reset();
+    else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') setOperator(e.key);
 })
 
-function inputFunction(e) {
-    const value = document.querySelector(`.inputNumber[value = '${e.key}']`);
-    if (!value) return;
-    screen.textContent += value.value;
-    screenNumber = parseFloat(screen.textContent);
+//FOR OPERATIONS
+operators.forEach(operator => operator.addEventListener('click', () => setOperator(operator.value)));
+
+function setOperator(operator) {
+    if(operatorValue !== '') eval();
+    operandA = parseFloat(screen.textContent);
+    operatorValue = operator;
+    inputReset = true;
 }
 
-function inputDec(e) {
-    const value = document.querySelector(`.inputDecimal[value = '${e.key}']`);
-    if (!value) return;
-    if (screen.textContent.includes('.')) return;
-    if (screen.textContent === '') screen.textContent = '0.';
-    else screen.textContent += '.';
-    screenNumber = parseFloat(screen.textContent);
+function eval() {
+    if (operatorValue === '') return;
+    operandB = parseFloat(screen.textContent);
+    if (operatorValue === '+' || operatorValue === '-') screen.textContent = operateA(operatorValue, operandA, operandB);
+    else if (operatorValue === '*' || operatorValue === '/') screen.textContent = operateB(operatorValue, operandA, operandB);
+    operatorValue = '';
+    console.log(operandA, operatorValue, operandB);
+    console.log(screen.textContent);
 }
-
-function screenDelete(e) {
-    const screenDel = document.querySelector(`.delete[value = '${e.key}']`);
-    if (!screenDel) return;
-    let string = screen.textContent;
-    screen.textContent = string.slice(0, string.length - 1);
-    screenNumber = parseFloat(screen.textContent);
-}
-
-operators.forEach(operator => operator.addEventListener('click', () => {
-    operate(operator.value, screenNumber, storage);
-}));
 
 function add (a,b) {return a + b;}
 function subtract (a,b) {return a - b;}
 function multiply (a,b) {return a * b;}
-function division (a,b){return a / b;}
+function divide (a,b){return a / b;}
 
-function operate (operator, a, b) {
-    if (operator === '+') add(a,b);
-    else if (operator === '-') subtract(a,b);
-    else if (operator === '*') multiply(a,b);
-    else division(a,b);
+function operateA (operator, a, b) {
+    if (operator === '+') return add(a,b);
+    return subtract(a,b);
 }
-
-
-window.addEventListener('keydown', inputFunction);
-window.addEventListener('keydown', screenDelete);
-window.addEventListener('keydown', inputDec);
+function operateB (operator, a, b) {
+    if (operator === '*') return multiply(a,b);
+    return divide(a,b);
+}
