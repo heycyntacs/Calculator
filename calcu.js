@@ -70,9 +70,7 @@ function eval() {
     operandB = parseFloat(screen.textContent);
     if ((isNaN(operandA) || isNaN(operandB)) || (screenReset || operatorValue === '')) return;
     screen.textContent = operate (operatorValue, operandA, operandB);
-    console.log(operandA, operatorValue, operandB);
     operatorValue = '';
-    console.log(screen.textContent);
 }
 
 function add (a,b) {return a + b;}
