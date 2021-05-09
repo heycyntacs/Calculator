@@ -69,8 +69,7 @@ function setOperator(operator) {
 function eval() {
     operandB = parseFloat(screen.textContent);
     if ((isNaN(operandA) || isNaN(operandB)) || (screenReset || operatorValue === '')) return;
-    if (operatorValue === '+' || operatorValue === '-') screen.textContent = operateA(operatorValue, operandA, operandB);
-    else if (operatorValue === '*' || operatorValue === '/') screen.textContent = operateB(operatorValue, operandA, operandB);
+    screen.textContent = operate (operatorValue, operandA, operandB);
     console.log(operandA, operatorValue, operandB);
     operatorValue = '';
     console.log(screen.textContent);
@@ -81,11 +80,9 @@ function subtract (a,b) {return a - b;}
 function multiply (a,b) {return a * b;}
 function divide (a,b){return a / b;}
 
-function operateA (operator, a, b) {
+function operate (operator, a, b) {
     if (operator === '+') return add(a,b);
-    return subtract(a,b);
-}
-function operateB (operator, a, b) {
-    if (operator === '*') return multiply(a,b);
+    else if (operator === '-') return subtract(a,b);
+    else if (operator === '*') return multiply(a,b);
     return divide(a,b);
 }
