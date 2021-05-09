@@ -1,5 +1,6 @@
 const inputButtons = document.querySelectorAll('.inputNumber');
 const inputDecimal = document.querySelector('.inputDecimal');
+const screenContainer = document.querySelector('.screenContainer');
 const screen = document.querySelector('.screen');
 const clear = document.querySelector('.clear');
 const del = document.querySelector('.delete');
@@ -7,6 +8,7 @@ const equals = document.querySelector('.equals');
 const operators = document.querySelectorAll('.operator');
 let operandA, operandB;
 let operatorValue = '';
+let screenReset = false;
 
 //FOR INPUTTING NUMBERS
 //Buttons
@@ -17,10 +19,12 @@ del.addEventListener('click', backSpace);
 equals.addEventListener('click', eval);
 
 function input(button) {
+    if (screen.textContent === '' || screenReset) screenResetter();
     screen.textContent += (button);
 }
 
 function decimal () {
+    if (screen.textContent === '' || screenReset) screenResetter();
     if (screen.textContent.includes('.')) return;
     if (screen.textContent === '') screen.textContent = '0.';
     else screen.textContent += '.';
@@ -30,6 +34,11 @@ function reset () {
     screen.textContent = '';
     operandA = 0;
     operandB = 0;
+}
+
+function screenResetter() {
+    screenReset = false;
+    screen.textContent = '';
 }
 
 function backSpace () {
@@ -44,7 +53,7 @@ window.addEventListener('keydown', e => {
     else if (e.key === 'Backspace') backSpace();
     else if (e.key === 'Escape') reset();
     else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') setOperator(e.key);
-    else if (e.key === 'Enter') eval();
+    else if (e.key === 'Enter') setOperator();
 })
 
 //FOR OPERATIONS
@@ -54,15 +63,16 @@ function setOperator(operator) {
     if(operatorValue !== '') eval();
     operandA = parseFloat(screen.textContent);
     operatorValue = operator;
-    screen.textContent = '';
+    screenReset = true;
 }
 
 function eval() {
     operandB = parseFloat(screen.textContent);
-    if (isNaN(operandA) || isNaN(operandB)) return;
+    if ((isNaN(operandA) || isNaN(operandB)) || (screenReset || operatorValue === '')) return;
     if (operatorValue === '+' || operatorValue === '-') screen.textContent = operateA(operatorValue, operandA, operandB);
     else if (operatorValue === '*' || operatorValue === '/') screen.textContent = operateB(operatorValue, operandA, operandB);
     console.log(operandA, operatorValue, operandB);
+    operatorValue = '';
     console.log(screen.textContent);
 }
 
