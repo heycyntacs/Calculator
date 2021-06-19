@@ -45,7 +45,6 @@ function backSpace () {
     screen.textContent = screen.textContent.slice(0, - 1);
 }
 
-
 //Keyboard-support
 window.addEventListener('keydown', e => {
     if (e.key >= '0' && e.key <= '9') input(e.key);
@@ -53,7 +52,12 @@ window.addEventListener('keydown', e => {
     else if (e.key === 'Backspace') backSpace();
     else if (e.key === 'Escape') reset();
     else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') setOperator(e.key);
-    else if (e.key === 'Enter') setOperator();
+    else if (e.key === 'Enter') {
+        if (operatorValue === '') {
+            return;
+        }
+        setOperator();
+    }
 })
 
 //FOR OPERATIONS
@@ -82,5 +86,5 @@ function operate (operator, a, b) {
     if (operator === '+') return add(a,b);
     else if (operator === '-') return subtract(a,b);
     else if (operator === '*') return multiply(a,b);
-    return divide(a,b);
+    else if (operator === '/') return divide(a,b);
 }
